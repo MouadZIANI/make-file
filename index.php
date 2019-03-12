@@ -1,12 +1,13 @@
 <?php
 	if (isset($_POST['submit']) && !empty($_POST['file-name'])) {
+		$webRoot = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 		$fileName = $_POST['file-name'];
 		$content = $_POST['content'];
 		if(!file_exists($fileName)) {
 			touch($fileName);
-			$message = "The file $fileName updated succesfully";
-		} else {
-			$message = "The file $fileName created succesfully";
+			$message = "The file <a onClick='copy(this)' href='$webRoot" . "$fileName'>$webRoot" . "$fileName</a> updated succesfully";
+		} elseif(!empty($_POST['content'])) {
+			$message = "The file <a onClick='copy(this)' href='$webRoot" . "$fileName'>$webRoot" . "$fileName</a> created succesfully";
 		}
 		$oldContent = file_get_contents($fileName);
 		$oldContent .= $content;
@@ -22,7 +23,7 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
-	<section class="content" style="margin-top: 100px">
+	<section class="content" style="margin-top: 90px">
         <div id="container" class="container">
             <div class="row">
             	<div class="col-md-6 offset-sm-3">
